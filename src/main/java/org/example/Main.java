@@ -10,7 +10,7 @@ public class Main {
         GetSummonerInfo getSummonerInfo = new GetSummonerInfo();
         System.out.println("Retrieving Summoner Matchhistory - ");
         String[] matchHistoryIDs = getSummonerInfo.getSummonerData("Dawidsonek", Region.EUW1, MatchRegion.EUROPE);
-        System.out.println("Retrieving match with id:" + matchHistoryIDs[0]);
+        System.out.println("Retrieving match with  id:" + matchHistoryIDs[0]);
         Match match = getSummonerInfo.getMatchHistoryData(MatchRegion.EUROPE, matchHistoryIDs[0]);
 
         for(String x: match.getMetadata().getParticipants()){
