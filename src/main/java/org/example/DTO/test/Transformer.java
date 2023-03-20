@@ -95,6 +95,7 @@ public class Transformer {
             case 18 -> "Tristana";
             case 120 -> "Hecarim";
             case 15 -> "Sivir";
+            case 246 -> "Qiyana";
             case 236 -> "Lucian";
             case 107 -> "Rengar";
             case 19 -> "Warwick";
@@ -113,6 +114,7 @@ public class Transformer {
             case 115 -> "Ziggs";
             case 245 -> "Ekko";
             case 61 -> "Orianna";
+            case 221 -> "Zeri";
             case 114 -> "Fiora";
             case 9 -> "Fiddlesticks";
             case 31 -> "Cho'Gath";
@@ -123,6 +125,7 @@ public class Transformer {
             case 56 -> "Nocturne";
             case 222 -> "Jinx";
             case 83 -> "Yorick";
+            case 888 -> "Renata";
             case 6 -> "Urgot";
             case 145 -> "Kai'sa";
             case 203 -> "Kindred";

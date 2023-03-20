@@ -19,13 +19,14 @@ import java.util.Map;
 public class Main {
     public static void main(String[] args){
         System.out.println("Hello world!");
+        String name = "Piasma";
 
         PlayerService playerService = new PlayerService();
         MatchService matchService = new MatchService(playerService);
         DdragonService ddragonService = new DdragonService();
 
         System.out.println("Retrieving Summoner Matchhistory - ");
-        String[] matchHistoryIDs = playerService.getSummonerData("Freedomfighter28", Region.EUW1, MatchRegion.EUROPE);
+        String[] matchHistoryIDs = playerService.getSummonerData(name, Region.EUW1, MatchRegion.EUROPE);
         System.out.println("Retrieving match with id:" + matchHistoryIDs[0]);
         Match match = playerService.getMatchHistoryData(MatchRegion.EUROPE, matchHistoryIDs[0]);
 
@@ -38,9 +39,15 @@ public class Main {
             System.out.println(participant.getSummonerName() + " - " + participant.getKills() + " / " + participant.getDeaths() + " / " + participant.getAssists());
         }
 
-        System.out.println("Retrieving live game championData for: Freedomfighter28");
+        System.out.println("Retrieving live game championData for: " + name);
 
-        List<CurrentGameParticipant> participants = matchService.getCurrentGameParticipants(Region.EUW1, "Freedomfighter28");
+        List<CurrentGameParticipant> participants = matchService.getCurrentGameParticipants(Region.EUW1, name);
+        if (participants != null){
+            matchService.printGameParticipants(participants);
+            ddragonService.getDdragonData().data.get("Ashe");
+        }else{
+            System.out.println("Summoner is not ingame");
+        }
         List<BannedChampion> bannedChampions = matchService.getBannedChampions(Region.EUW1, "Freedomfighter28");
         matchService.printGameParticipants(participants);
 
