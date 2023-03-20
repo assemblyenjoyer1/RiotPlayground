@@ -9,6 +9,7 @@ import org.example.DTO.models.Match;
 import org.example.DTO.models.MatchRegion;
 import org.example.DTO.models.Region;
 import org.example.DTO.models.Summoner;
+import org.example.DTO.models.v4.CurrentGameInfo;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -19,7 +20,7 @@ public class GetSummonerInfo {
 
     public String[] getSummonerData(String username, Region region, MatchRegion matchRegion) {
         String summonerName = username;
-        String puuid = getSummonerPuuid(region, summonerName);
+        String puuid = getSummonerByName(region, summonerName).getPuuid();
         HttpResponse<JsonNode> matchHistoryResponse = getMatchHistoryResponse(matchRegion, puuid);
         JSONArray matchHistoryArrayJson = matchHistoryResponse.getBody().getArray();
         System.out.println(matchHistoryArrayJson);
@@ -38,7 +39,7 @@ public class GetSummonerInfo {
             JSONObject matchHistoryJSON = matchResponse.getBody().getObject();
             match = gson.fromJson(String.valueOf(matchHistoryJSON), Match.class);
         }catch(UnirestException e){
-            System.out.println("unable to get matchhistory data");
+            System.out.println("unable to get matchhistory root");
         }
         return match;
     }
@@ -56,8 +57,7 @@ public class GetSummonerInfo {
         return matchHistoryResponse;
     }
 
-    public static String getSummonerPuuid(Region region, String summonerName){
-        String puuid = "";
+    public Summoner getSummonerByName(Region region, String summonerName){
         try{
             HttpResponse<JsonNode> summonerResponse;
             // Make a GET request to the summoner endpoint
@@ -65,11 +65,11 @@ public class GetSummonerInfo {
             summonerResponse = Unirest.get(summonerUrl).asJson();
             JSONObject summonerJson = summonerResponse.getBody().getObject();
             Summoner summoner = gson.fromJson(String.valueOf(summonerJson), Summoner.class);
-            puuid = summoner.getPuuid();
+            return summoner;
         }catch(UnirestException e){
-            System.out.println("unable to get summoner puuid");
+            System.out.println("unable to get summoner for name:" + summonerName);
         }
-        return puuid;
+        return null;
     }
 
     public Summoner getSummonerNameByPuuid(String puuid, Region region){
@@ -81,6 +81,20 @@ public class GetSummonerInfo {
             return summoner;
         }catch(UnirestException e){
             System.out.println("unable to get summonername for puuid " + puuid);
+        }
+        return null;
+    }
+
+    public CurrentGameInfo getCurrentGameInfo(Region region, String accountId){
+        String summonerUrl = "https://" + region + ".api.riotgames.com/lol/spectator/v4/active-games/by-summoner/" + accountId + "?api_key=" + API_KEY;
+        System.out.println(summonerUrl);
+        try{
+            HttpResponse<JsonNode> response = Unirest.get(summonerUrl).asJson();
+            JSONObject summonerJson = response.getBody().getObject();
+            CurrentGameInfo currentGameInfo = gson.fromJson(String.valueOf(summonerJson), CurrentGameInfo.class);
+            return currentGameInfo;
+        }catch(UnirestException e){
+            System.out.println("unable to get current game info for accountId " + accountId);
         }
         return null;
     }
