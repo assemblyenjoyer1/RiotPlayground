@@ -12,8 +12,10 @@ public class Transformer {
             case 69 -> "Cassiopeia";
             case 136 -> "Aurelion Sol";
             case 13 -> "Ryze";
+            case 523 -> "Aphelios"
             case 78 -> "Poppy";
             case 14 -> "Sion";
+            case 497 -> "Rakan";
             case 1 -> "Annie";
             case 498 -> "Xayah";
             case 202 -> "Jhin";
