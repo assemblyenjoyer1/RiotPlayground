@@ -2,7 +2,7 @@ package org.example.DTO.models.v4;
 
 import java.util.List;
 
-public class CurrentGameInfo {
+public class SummonerService {
     long gameId;
     String gameType;
     long gameStartTime;
@@ -15,7 +15,7 @@ public class CurrentGameInfo {
     Observer observers;
     List<CurrentGameParticipant> participants;
 
-    public CurrentGameInfo(long gameId, String gameType, long gameStartTime, long mapId, long gameLength, String platformId, String gameMode, List<BannedChampion> bannedChampions, long gameQueueConfigId, Observer observers, List<CurrentGameParticipant> participants) {
+    public SummonerService(long gameId, String gameType, long gameStartTime, long mapId, long gameLength, String platformId, String gameMode, List<BannedChampion> bannedChampions, long gameQueueConfigId, Observer observers, List<CurrentGameParticipant> participants) {
         this.gameId = gameId;
         this.gameType = gameType;
         this.gameStartTime = gameStartTime;

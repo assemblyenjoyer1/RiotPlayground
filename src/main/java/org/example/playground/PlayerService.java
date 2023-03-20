@@ -9,11 +9,11 @@ import org.example.DTO.models.Match;
 import org.example.DTO.models.MatchRegion;
 import org.example.DTO.models.Region;
 import org.example.DTO.models.Summoner;
-import org.example.DTO.models.v4.CurrentGameInfo;
+import org.example.DTO.models.v4.SummonerService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class GetSummonerInfo {
+public class PlayerService {
     private static final String API_KEY = System.getenv("APIKEY");
     static Gson gson = new Gson();
 
@@ -85,14 +85,14 @@ public class GetSummonerInfo {
         return null;
     }
 
-    public CurrentGameInfo getCurrentGameInfo(Region region, String accountId){
+    public SummonerService getCurrentGameInfo(Region region, String accountId){
         String summonerUrl = "https://" + region + ".api.riotgames.com/lol/spectator/v4/active-games/by-summoner/" + accountId + "?api_key=" + API_KEY;
         System.out.println(summonerUrl);
         try{
             HttpResponse<JsonNode> response = Unirest.get(summonerUrl).asJson();
             JSONObject summonerJson = response.getBody().getObject();
-            CurrentGameInfo currentGameInfo = gson.fromJson(String.valueOf(summonerJson), CurrentGameInfo.class);
-            return currentGameInfo;
+            SummonerService summonerService = gson.fromJson(String.valueOf(summonerJson), SummonerService.class);
+            return summonerService;
         }catch(UnirestException e){
             System.out.println("unable to get current game info for accountId " + accountId);
         }
