@@ -25,7 +25,7 @@ public class Main {
         DdragonService ddragonService = new DdragonService();
 
         System.out.println("Retrieving Summoner Matchhistory - ");
-        String[] matchHistoryIDs = playerService.getSummonerData("smurfq gap", Region.EUW1, MatchRegion.EUROPE);
+        String[] matchHistoryIDs = playerService.getSummonerData("Freedomfighter28", Region.EUW1, MatchRegion.EUROPE);
         System.out.println("Retrieving match with id:" + matchHistoryIDs[0]);
         Match match = playerService.getMatchHistoryData(MatchRegion.EUROPE, matchHistoryIDs[0]);
 
@@ -42,9 +42,7 @@ public class Main {
 
         List<CurrentGameParticipant> participants = matchService.getCurrentGameParticipants(Region.EUW1, "Freedomfighter28");
         List<BannedChampion> bannedChampions = matchService.getBannedChampions(Region.EUW1, "Freedomfighter28");
-        //matchService.printGameParticipants(participants);
-        Printer.printList(participants);
-        Printer.printList(bannedChampions);
+        matchService.printGameParticipants(participants);
 
     }
 }

@@ -34,6 +34,7 @@ public class Transformer {
             case 25 -> "Morgana";
             case 28 -> "Evelynn";
             case 105 -> "Fizz";
+            case 360 -> "Samira";
             case 74 -> "Heimerdinger";
             case 238 -> "Zed";
             case 68 -> "Rumble";
