@@ -146,6 +146,7 @@ public class Transformer {
             case 41 -> "Gangplank";
             case 48 -> "Trundle";
             case 38 -> "Kassadin";
+            case 166 -> "Akshan";
             case 161 -> "Vel'Koz";
             case 143 -> "Zyra";
             case 267 -> "Nami";

@@ -23,14 +23,13 @@ public class LiveGameGUI extends JFrame {
 
         // Initialize GUI components
         nameTextField = new JTextField(20);
-        regionTextField = new JTextField(20);
+        JComboBox<Region> regionComboBox = new JComboBox<>(Region.values());
         retrieveButton = new JButton("Retrieve Live Game Data");
         liveGameDataTextArea = new JTextArea(10, 30);
 
-
         retrieveButton.addActionListener(e -> {
             String name = nameTextField.getText();
-            Region region = Transformer.getRegionByString(regionTextField.getText());
+            Region region = (Region) regionComboBox.getSelectedItem();
             List<CurrentGameParticipant> currentGameParticipants = matchService.getCurrentGameParticipants(region, name);
             updateLiveGameDataTextArea(currentGameParticipants);
         });
@@ -39,8 +38,8 @@ public class LiveGameGUI extends JFrame {
         setLayout(new FlowLayout());
         add(new JLabel("Enter your name:"));
         add(nameTextField);
-        add(new JLabel("Enter your region:"));
-        add(regionTextField);
+        add(new JLabel("Select your region:"));
+        add(regionComboBox);
         add(retrieveButton);
         add(new JScrollPane(liveGameDataTextArea));
 
