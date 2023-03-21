@@ -1,5 +1,7 @@
 package org.example.DTO.test;
 
+import org.example.DTO.models.enums.Region;
+
 public class Transformer {
 
     public static String getChampionNameById(long championId) {
@@ -134,9 +136,11 @@ public class Transformer {
             case 53 -> "Blitzcrank";
             case 98 -> "Shen";
             case 201 -> "Braum";
+            case 895 -> "Nilah";
             case 5 -> "Xin Zhao";
             case 29 -> "Twitch";
             case 11 -> "Master Yi";
+            case 887 -> "Gwen";
             case 44 -> "Taric";
             case 32 -> "Amumu";
             case 41 -> "Gangplank";
@@ -150,4 +154,21 @@ public class Transformer {
             default -> "champion not found";
         };
     }
+
+    public static Region getRegionByString(String region){
+        return switch(region.toLowerCase()){
+            case "euw" -> Region.EUW1;
+            case "eune" -> Region.EUN1;
+            case "brazil" -> Region.BR1;
+            case "japan" -> Region.JP1;
+            case "korea" -> Region.KR;
+            case "LA" -> Region.LA1;
+            case "LA2" -> Region.LA2;
+            case "NA" -> Region.NA1;
+            case "OC" -> Region.OC1;
+            case "PH2" -> Region.PH2;
+            default -> null;
+        };
+    }
+
 }

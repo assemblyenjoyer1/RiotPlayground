@@ -1,37 +1,39 @@
 package org.example;
 
 import org.example.DTO.models.*;
-import org.example.DTO.models.ddragon.Champion;
-import org.example.DTO.models.ddragon.ChampionData;
+import org.example.DTO.models.enums.MatchRegion;
+import org.example.DTO.models.enums.Region;
 import org.example.DTO.models.v4.BannedChampion;
 import org.example.DTO.models.v4.CurrentGameParticipant;
-import org.example.DTO.models.v4.SummonerService;
-import org.example.DTO.test.Printer;
 import org.example.DTO.test.Transformer;
-import org.example.playground.DdragonService;
-import org.example.playground.MatchService;
-import org.example.playground.PlayerService;
+import org.example.exception.SummonerNotIngameException;
+import org.example.gui.LiveGameGUI;
+import org.example.services.ChatService;
+import org.example.services.DdragonService;
+import org.example.services.MatchService;
+import org.example.services.PlayerService;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Main {
     public static void main(String[] args){
         System.out.println("Hello world!");
-        String name = "Piasma";
+        LiveGameGUI gui = new LiveGameGUI();
+        /*
+        String name = "Thebausffs";
+        Region region = Region.EUW1;
 
         PlayerService playerService = new PlayerService();
         MatchService matchService = new MatchService(playerService);
         DdragonService ddragonService = new DdragonService();
-
+        ChatService chatService = new ChatService();
         System.out.println("Retrieving Summoner Matchhistory - ");
-        String[] matchHistoryIDs = playerService.getSummonerData(name, Region.EUW1, MatchRegion.EUROPE);
+        String[] matchHistoryIDs = playerService.getSummonerData(name, region, MatchRegion.EUROPE);
         System.out.println("Retrieving match with id:" + matchHistoryIDs[0]);
         Match match = playerService.getMatchHistoryData(MatchRegion.EUROPE, matchHistoryIDs[0]);
 
         for(String x: match.getMetadata().getParticipants()){
-            Summoner summoner = playerService.getSummonerNameByPuuid(x, Region.EUW1);
+            Summoner summoner = playerService.getSummonerNameByPuuid(x, region);
             System.out.println(summoner.getName());
         }
 
@@ -41,15 +43,30 @@ public class Main {
 
         System.out.println("Retrieving live game championData for: " + name);
 
-        List<CurrentGameParticipant> participants = matchService.getCurrentGameParticipants(Region.EUW1, name);
-        if (participants != null){
+        List<CurrentGameParticipant> participants = matchService.getCurrentGameParticipants(region, name);
+        try{
             matchService.printGameParticipants(participants);
-            ddragonService.getDdragonData().data.get("Ashe");
-        }else{
-            System.out.println("Summoner is not ingame");
+        }catch(SummonerNotIngameException e){
+            System.out.println(e);
         }
-        List<BannedChampion> bannedChampions = matchService.getBannedChampions(Region.EUW1, "Freedomfighter28");
-        matchService.printGameParticipants(participants);
+
+        ddragonService.getDdragonData().data.get("Ashe");
+
+
+        List<BannedChampion> bannedChampions = matchService.getBannedChampions(region, name);
+        for(BannedChampion bannedChampion: bannedChampions){
+            System.out.println(Transformer.getChampionNameById(bannedChampion.getChampionId()));
+        }
+
+        */
+
 
     }
 }
+
+        /*
+        Summoner summoner = playerService.getSummonerByName();
+        String summonerPuuid = summoner.getPuuid();
+        System.out.println(summoner.getName());
+        chatService.doSomething(summonerPuuid);
+         */

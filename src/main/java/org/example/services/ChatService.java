@@ -1,10 +1,9 @@
-package org.example.playground;
+package org.example.services;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import org.example.DTO.models.Match;
 import org.json.JSONObject;
 
 public class ChatService {

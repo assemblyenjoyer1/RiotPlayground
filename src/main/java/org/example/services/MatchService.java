@@ -1,4 +1,4 @@
-package org.example.playground;
+package org.example.services;
 
 import org.example.DTO.models.enums.Region;
 import org.example.DTO.models.Summoner;

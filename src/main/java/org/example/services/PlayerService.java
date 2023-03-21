@@ -1,4 +1,4 @@
-package org.example.playground;
+package org.example.services;
 
 import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
@@ -23,7 +23,6 @@ public class PlayerService {
         String puuid = getSummonerByName(region, summonerName).getPuuid();
         HttpResponse<JsonNode> matchHistoryResponse = getMatchHistoryResponse(matchRegion, puuid);
         JSONArray matchHistoryArrayJson = matchHistoryResponse.getBody().getArray();
-        System.out.println(matchHistoryArrayJson);
         String[] stringArray = gson.fromJson(String.valueOf(matchHistoryArrayJson), String[].class);
 
         return stringArray;

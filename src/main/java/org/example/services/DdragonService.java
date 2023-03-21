@@ -1,4 +1,4 @@
-package org.example.playground;
+package org.example.services;
 
 import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
