@@ -1,11 +1,12 @@
 package org.example.playground;
 
-import org.example.DTO.models.Region;
+import org.example.DTO.models.enums.Region;
 import org.example.DTO.models.Summoner;
 import org.example.DTO.models.v4.BannedChampion;
 import org.example.DTO.models.v4.SummonerService;
 import org.example.DTO.models.v4.CurrentGameParticipant;
 import org.example.DTO.test.Transformer;
+import org.example.exception.SummonerNotIngameException;
 
 import java.util.List;
 
@@ -37,10 +38,14 @@ public class MatchService {
         return null;
     }
 
-    public void printGameParticipants(List<CurrentGameParticipant> currentGameParticipants){
-        for(CurrentGameParticipant participant: currentGameParticipants){
+    public boolean printGameParticipants(List<CurrentGameParticipant> currentGameParticipants) throws SummonerNotIngameException {
+        if (currentGameParticipants == null) {
+            throw new SummonerNotIngameException();
+        }
+        for (CurrentGameParticipant participant : currentGameParticipants) {
             System.out.println(participant.getSummonerName() + " is currently playing " + Transformer.getChampionNameById(participant.getChampionId()));
         }
+        return true;
     }
 
 }
