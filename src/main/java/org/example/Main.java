@@ -18,7 +18,6 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws ClassNotFoundException {
         System.out.println("Hello world!");
-        Class.forName("com.mashape.unirest.http.exceptions.UnirestException");
         LiveGameGUI gui = new LiveGameGUI();
         /*
         String name = "Thebausffs";
