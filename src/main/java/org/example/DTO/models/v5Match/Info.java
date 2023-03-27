@@ -1,4 +1,4 @@
-package org.example.DTO.models;
+package org.example.DTO.models.v5Match;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public class Info {
     private List<Participant> participants;
     private String platformId;
     private int queueId;
-    private List<Team> teams;
+    private List<Team> objectives;
     private String tournamentCode;
 
     public Info(long gameCreation, long gameDuration, long gameEndTimestamp, long gameId, String gameMode, String gameName,
@@ -36,7 +36,7 @@ public class Info {
         this.participants = participants;
         this.platformId = platformId;
         this.queueId = queueId;
-        this.teams = teams;
+        this.objectives = teams;
         this.tournamentCode = tournamentCode;
     }
 
@@ -145,11 +145,11 @@ public class Info {
     }
 
     public List<Team> getTeams() {
-        return teams;
+        return objectives;
     }
 
-    public void setTeams(List<Team> teams) {
-        this.teams = teams;
+    public void setTeams(List<Team> objectives) {
+        this.objectives = objectives;
     }
 
     public String getTournamentCode() {

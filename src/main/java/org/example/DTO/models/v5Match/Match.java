@@ -1,4 +1,4 @@
-package org.example.DTO.models;
+package org.example.DTO.models.v5Match;
 
 public class Match {
     Metadata metadata;

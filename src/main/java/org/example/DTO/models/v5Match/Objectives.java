@@ -1,8 +1,6 @@
 package org.example.DTO.models.v5Match;
 
-import org.example.DTO.models.Objective;
-
-public class Team {
+public class Objectives {
 
     Objective baron;
     Objective champion;
@@ -11,7 +9,7 @@ public class Team {
     Objective riftHerald;
     Objective tower;
 
-    public Team(Objective baron, Objective champion, Objective dragon, Objective inhibitor, Objective riftHerald, Objective tower) {
+    public Objectives(Objective baron, Objective champion, Objective dragon, Objective inhibitor, Objective riftHerald, Objective tower) {
         this.baron = baron;
         this.champion = champion;
         this.dragon = dragon;
