@@ -18,13 +18,13 @@ public class LeagueService {
         HttpResponse<JsonNode> matchResponse;
         LeagueEntry leagueEntry = null;
         try{
-            String matchUrl = "https://" + region + ".api.riotgames.com/lol/league/v4/entries/by-summoner/{encryptedSummonerId}" + encryptedSummonerId + "?api_key=" + apiKey;
+            String matchUrl = "https://" + region + ".api.riotgames.com/lol/league/v4/entries/by-summoner/" + encryptedSummonerId + "?api_key=" + apiKey;
             System.out.println(matchUrl);
             matchResponse = Unirest.get(matchUrl).asJson();
             JSONObject matchHistoryJSON = matchResponse.getBody().getObject();
             leagueEntry = gson.fromJson(String.valueOf(matchHistoryJSON), LeagueEntry.class);
         }catch(UnirestException e){
-            System.out.println("unable to get matchhistory root");
+            System.out.println("unable to get league entry for encrypted summoner id: " + encryptedSummonerId);
         }
         return leagueEntry;
     }
