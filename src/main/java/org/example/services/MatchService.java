@@ -2,9 +2,9 @@ package org.example.services;
 
 import org.example.DTO.models.enums.Region;
 import org.example.DTO.models.Summoner;
-import org.example.DTO.models.v4.BannedChampion;
-import org.example.DTO.models.v4.SummonerService;
-import org.example.DTO.models.v4.CurrentGameParticipant;
+import org.example.DTO.models.v4spectator.BannedChampion;
+import org.example.DTO.models.v4spectator.SummonerService;
+import org.example.DTO.models.v4spectator.CurrentGameParticipant;
 import org.example.DTO.test.Transformer;
 import org.example.exception.SummonerNotIngameException;
 

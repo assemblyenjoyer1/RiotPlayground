@@ -9,7 +9,7 @@ import org.example.DTO.models.v5Match.Match;
 import org.example.DTO.models.enums.MatchRegion;
 import org.example.DTO.models.enums.Region;
 import org.example.DTO.models.Summoner;
-import org.example.DTO.models.v4.SummonerService;
+import org.example.DTO.models.v4spectator.SummonerService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -46,7 +46,7 @@ public class PlayerService {
         return match;
     }
 
-    public static HttpResponse<JsonNode> getMatchHistoryResponse(MatchRegion matchRegion, String puuid){
+    public HttpResponse<JsonNode> getMatchHistoryResponse(MatchRegion matchRegion, String puuid){
         HttpResponse<JsonNode> matchHistoryResponse = null;
         try{
             // Make a GET request to the match history endpoint

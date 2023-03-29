@@ -1,19 +1,6 @@
 package org.example;
 
-import org.example.DTO.models.*;
-import org.example.DTO.models.enums.MatchRegion;
-import org.example.DTO.models.enums.Region;
-import org.example.DTO.models.v4.BannedChampion;
-import org.example.DTO.models.v4.CurrentGameParticipant;
-import org.example.DTO.test.Transformer;
-import org.example.exception.SummonerNotIngameException;
 import org.example.gui.LiveGameGUI;
-import org.example.services.ChatService;
-import org.example.services.DdragonService;
-import org.example.services.MatchService;
-import org.example.services.PlayerService;
-
-import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws ClassNotFoundException {

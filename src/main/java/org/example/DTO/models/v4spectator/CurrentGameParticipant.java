@@ -1,4 +1,4 @@
-package org.example.DTO.models.v4;
+package org.example.DTO.models.v4spectator;
 
 import java.util.List;
 

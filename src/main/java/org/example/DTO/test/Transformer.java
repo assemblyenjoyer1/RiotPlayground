@@ -76,6 +76,8 @@ public class Transformer {
             case 64 -> "Lee Sin";
             case 420 -> "Illaoi";
             case 60 -> "Elise";
+            case 235 -> "Senna";
+            case 777 -> "Yone";
             case 106 -> "Volibear";
             case 20 -> "Nunu";
             case 4 -> "Twisted Fate";
