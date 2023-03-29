@@ -5,4 +5,11 @@ public class MiniSeries {
     private String progress;
     private int target;
     private int wins;
+
+    public MiniSeries(int losses, String progress, int target, int wins) {
+        this.losses = losses;
+        this.progress = progress;
+        this.target = target;
+        this.wins = wins;
+    }
 }

@@ -1,19 +1,24 @@
 package org.example.gui;
 
 import org.example.DTO.models.enums.Region;
+import org.example.DTO.models.v4league.LeagueEntry;
 import org.example.DTO.models.v4spectator.CurrentGameParticipant;
 import org.example.DTO.test.Transformer;
+import org.example.services.LeagueService;
 import org.example.services.MatchService;
 import org.example.services.PlayerService;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class LiveGameGUI extends JFrame {
     private JTextField nameTextField, regionTextField, historyNameTextField, apiKeyTextField;
     private JButton retrieveButton, resetButton, setApiKey, retrieveMatchHistoryButton;
     private JTextArea liveGameDataTextArea;
+    private JComboBox<Region> regionComboBox;
     String apiKey = System.getenv("APIKEY");
 
 
@@ -23,8 +28,10 @@ public class LiveGameGUI extends JFrame {
             PlayerService playerService = new PlayerService(apiKey);
             MatchService matchService = new MatchService(playerService);
 
+
+            regionComboBox = new JComboBox<>(Region.values());
             nameTextField = new JTextField(20);
-            JComboBox<Region> regionComboBox = new JComboBox<>(Region.values());
+            regionTextField = new JTextField(20);
             retrieveButton = new JButton("Retrieve Live Game Data");
             resetButton = new JButton("reset");
             liveGameDataTextArea = new JTextArea(10, 40);
@@ -38,7 +45,7 @@ public class LiveGameGUI extends JFrame {
                 String name = nameTextField.getText();
                 Region region = (Region) regionComboBox.getSelectedItem();
                 List<CurrentGameParticipant> currentGameParticipants = matchService.getCurrentGameParticipants(region, name);
-                updateLiveGameDataTextArea(currentGameParticipants);
+                updateLiveGameDataTextArea(region, currentGameParticipants);
             });
 
             resetButton.addActionListener(e -> {
@@ -57,48 +64,65 @@ public class LiveGameGUI extends JFrame {
 
             });
 
-            // Create panels to organize components
-            JPanel panelOne = new JPanel(new GridLayout(0, 1, 10, 5));
+            // Create the first panel and add components to it
+            JPanel panelOne = new JPanel(new BorderLayout());
             panelOne.setBorder(BorderFactory.createTitledBorder("Live Game Data"));
-            panelOne.add(new JLabel("Enter your name:"));
-            panelOne.add(nameTextField);
-            panelOne.add(new JLabel("Select your region:"));
-            panelOne.add(regionComboBox);
-            panelOne.add(retrieveButton);
-            panelOne.add(new JScrollPane(liveGameDataTextArea));
-            panelOne.add(resetButton);
+            JPanel topPanel = new JPanel(new GridLayout());
+            topPanel.add(new JLabel("Enter your name:"));
+            topPanel.add(nameTextField);
+            topPanel.add(new JLabel("Select your region:"));
+            topPanel.add(regionComboBox);
+            panelOne.add(topPanel, BorderLayout.NORTH);
+            panelOne.add(new JScrollPane(liveGameDataTextArea), BorderLayout.CENTER);
+            JPanel bottomPanel = new JPanel(new FlowLayout());
+            bottomPanel.add(retrieveButton);
+            bottomPanel.add(resetButton);
+            panelOne.add(bottomPanel, BorderLayout.SOUTH);
 
-            JPanel panelTwo = new JPanel(new GridLayout(0, 1, 5, 5));
+            // Create the second panel and add components to it
+            JPanel panelTwo = new JPanel(new BorderLayout());
             panelTwo.setBorder(BorderFactory.createTitledBorder("Match History"));
-            panelTwo.add(new JLabel("Retrieve matchhistory: "));
-            panelTwo.add(historyNameTextField);
-            panelTwo.add(retrieveMatchHistoryButton);
+            JPanel topPanelTwo = new JPanel(new FlowLayout());
+            topPanelTwo.add(new JLabel("Retrieve matchhistory: "));
+            topPanelTwo.add(historyNameTextField);
+            panelTwo.add(topPanelTwo, BorderLayout.NORTH);
+            panelTwo.add(retrieveMatchHistoryButton, BorderLayout.SOUTH);
 
-            JPanel panelThree = new JPanel(new GridLayout(0, 1, 5, 5));
+            // Create the third panel and add components to it
+            JPanel panelThree = new JPanel(new BorderLayout());
             panelThree.setBorder(BorderFactory.createTitledBorder("API Key"));
-            panelThree.add(new JLabel("Enter your api key:"));
-            panelThree.add(apiKeyTextField);
-            panelThree.add(setApiKey);
+            JPanel topPanelThree = new JPanel(new FlowLayout());
+            topPanelThree.add(new JLabel("Enter your api key:"));
+            topPanelThree.add(apiKeyTextField);
+            panelThree.add(topPanelThree, BorderLayout.NORTH);
+            panelThree.add(setApiKey, BorderLayout.SOUTH);
 
-            // Add panels to JFrame
-            setLayout(new GridLayout(0, 1, 10, 10));
-            add(panelOne);
-            add(panelTwo);
-            add(panelThree);
+            // Create the JTabbedPane and add the panels to it
+            JTabbedPane tabbedPane = new JTabbedPane();
+            tabbedPane.addTab("Live Game Data", panelOne);
+            tabbedPane.addTab("Match History", panelTwo);
+            tabbedPane.addTab("API Key", panelThree);
 
+            // Add the JTabbedPane to the JFrame
+            add(tabbedPane);
+
+            // Set the JFrame properties
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setSize(500, 800);
             setVisible(true);
         }
 
 
-        private void updateLiveGameDataTextArea(List<CurrentGameParticipant> currentGameParticipants) {
+        private void updateLiveGameDataTextArea(Region region, List<CurrentGameParticipant> currentGameParticipants) {
+            LeagueService leagueService = new LeagueService();
             StringBuilder sb = new StringBuilder();
             if (currentGameParticipants == null) {
                 sb.append("Summoner is not ingame");
             } else {
                 for (CurrentGameParticipant participant : currentGameParticipants) {
-                    sb.append(participant.getSummonerName()).append(" is currently playing ").append(Transformer.getChampionNameById(participant.getChampionId())).append("\n");
+                    Set<LeagueEntry> leagueEntries =leagueService.getLeagueEntryByEncryptedSummonerId(region, participant.getSummonerId());
+                    List<LeagueEntry> leagueEntryList = new ArrayList<>(leagueEntries);
+                    sb.append(participant.getSummonerName()).append(" is currently playing ").append(Transformer.getChampionNameById(participant.getChampionId())).append(" - " + leagueEntryList.get(0).getTier() + " ").append(leagueEntryList.get(0).getRank()).append(" | ").append("\n");
                 }
             }
 
