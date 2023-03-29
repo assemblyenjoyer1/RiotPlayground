@@ -120,9 +120,10 @@ public class LiveGameGUI extends JFrame {
                 sb.append("Summoner is not ingame");
             } else {
                 for (CurrentGameParticipant participant : currentGameParticipants) {
-                    Set<LeagueEntry> leagueEntries =leagueService.getLeagueEntryByEncryptedSummonerId(region, participant.getSummonerId());
+                    Set<LeagueEntry> leagueEntries = leagueService.getLeagueEntryByEncryptedSummonerId(region, participant.getSummonerId());
                     List<LeagueEntry> leagueEntryList = new ArrayList<>(leagueEntries);
-                    sb.append(participant.getSummonerName()).append(" is currently playing ").append(Transformer.getChampionNameById(participant.getChampionId())).append(" - " + leagueEntryList.get(0).getTier() + " ").append(leagueEntryList.get(0).getRank()).append(" | ").append("\n");
+                    String playerWinrate = leagueService.calculateWinrate(leagueEntryList.get(0).getWins(), leagueEntryList.get(0).getLosses());
+                    sb.append(participant.getSummonerName()).append(" is currently playing ").append(Transformer.getChampionNameById(participant.getChampionId())).append(" - " + leagueEntryList.get(0).getTier() + " ").append(leagueEntryList.get(0).getRank()).append(" | " + leagueEntryList.get(0).getLeaguePoints() + " LP").append(" - " + playerWinrate).append("\n");
                 }
             }
 

@@ -43,6 +43,7 @@ public class Transformer {
             case 82 -> "Mordekaiser";
             case 37 -> "Sona";
             case 350 -> "Yuumi";
+            case 164 -> "Camille";
             case 96 -> "Kog'Maw";
             case 55 -> "Katarina";
             case 117 -> "Lulu";

@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.text.DecimalFormat;
 import java.util.Set;
 
 import static org.example.services.PlayerService.apiKey;
@@ -34,6 +35,10 @@ public class LeagueService {
             System.out.println("unable to get league entry for encrypted summoner id: " + encryptedSummonerId);
         }
         return leagueEntries;
+    }
+
+    public String calculateWinrate(int wins, int losses) {
+        return String.format("%.2f%%", (double) wins / (wins + losses) * 100);
     }
 
 
