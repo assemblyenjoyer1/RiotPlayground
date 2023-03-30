@@ -143,6 +143,7 @@ public class Transformer {
             case 5 -> "Xin Zhao";
             case 29 -> "Twitch";
             case 11 -> "Master Yi";
+            case 234 -> "Viego";
             case 711 -> "Vex";
             case 147 -> "Seraphine";
             case 141 -> "Kayn";
