@@ -178,5 +178,14 @@ public class Transformer {
             default -> null;
         };
     }
+    
+    public static String getQueueTypeByQueueID(int id){
+        return switch (id){
+            case 420 -> "RankedSolo";
+            case 440 -> "Ranked Flex";
+            case 1100 -> "Ranked TFT";
+            default -> throw new IllegalStateException("Unexpected value: " + id);
+        };
+    }
 
 }

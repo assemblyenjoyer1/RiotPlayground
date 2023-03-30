@@ -12,6 +12,7 @@ import org.example.DTO.test.Transformer;
 import org.example.services.LeagueService;
 import org.example.services.MatchService;
 import org.example.services.PlayerService;
+import org.example.services.SecretService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,22 +24,27 @@ public class LiveGameGUI extends JFrame {
     private JTextField nameTextField, regionTextField, historyNameTextField, apiKeyTextField;
     private JButton retrieveButton, resetButton, setApiKey, retrieveMatchHistoryButton;
     private JTextArea liveGameDataTextArea, matchHistoryDataTextArea;
-    private JComboBox<Region> regionComboBox;
+    private JComboBox<Region> regionComboBox, regionComboBox2;
+    private JComboBox<MatchRegion> matchRegionComboBox;
     static String apiKey = System.getenv("APIKEY");
     static PlayerService playerService = new PlayerService(apiKey);
+    static SecretService secretService = new SecretService();
+    static boolean authenticated = false;
 
         public LiveGameGUI() {
             super("Testing stuff GUI");
             MatchService matchService = new MatchService(playerService);
-
-
             regionComboBox = new JComboBox<>(Region.values());
+            regionComboBox2 = new JComboBox<>(Region.values());
+            matchRegionComboBox = new JComboBox<>(MatchRegion.values());
             nameTextField = new JTextField(20);
             regionTextField = new JTextField(20);
             retrieveButton = new JButton("Retrieve Live Game Data");
             resetButton = new JButton("reset");
             liveGameDataTextArea = new JTextArea(10, 40);
+            liveGameDataTextArea.setEditable(false);
             matchHistoryDataTextArea = new JTextArea(10, 40);
+            matchHistoryDataTextArea.setEditable(false);
             apiKeyTextField = new JTextField(20);
             setApiKey = new JButton("set api key");
             historyNameTextField = new JTextField(20);
@@ -46,10 +52,14 @@ public class LiveGameGUI extends JFrame {
 
             // Add listeners to buttons
             retrieveButton.addActionListener(e -> {
-                String name = nameTextField.getText();
-                Region region = (Region) regionComboBox.getSelectedItem();
-                List<CurrentGameParticipant> currentGameParticipants = matchService.getCurrentGameParticipants(region, name);
-                updateLiveGameDataTextArea(region, currentGameParticipants);
+                if (authenticated || isPasswordCorrect()) {
+                    String name = nameTextField.getText();
+                    Region region = (Region) regionComboBox.getSelectedItem();
+                    List<CurrentGameParticipant> currentGameParticipants = matchService.getCurrentGameParticipants(region, name);
+                    updateLiveGameDataTextArea(region, currentGameParticipants);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Invalid password", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             });
 
             resetButton.addActionListener(e -> {
@@ -65,8 +75,10 @@ public class LiveGameGUI extends JFrame {
             });
 
             retrieveMatchHistoryButton.addActionListener(e -> {
+                Region region = (Region) regionComboBox2.getSelectedItem();
+                MatchRegion matchRegion = (MatchRegion) matchRegionComboBox.getSelectedItem();
                 String name = historyNameTextField.getText();
-                updateMatchHistoryTextArea(Region.EUW1, name);
+                updateMatchHistoryTextArea(region, matchRegion, name);
             });
 
             // Create the first panel and add components to it
@@ -87,10 +99,14 @@ public class LiveGameGUI extends JFrame {
             // Create the second panel and add components to it
             JPanel panelTwo = new JPanel(new BorderLayout());
             panelTwo.setBorder(BorderFactory.createTitledBorder("Match History"));
-            JPanel topPanelTwo = new JPanel(new FlowLayout());
-            topPanelTwo.add(new JLabel("Retrieve matchhistory: "));
+            JPanel topPanelTwo = new JPanel(new GridLayout());
+            topPanelTwo.add(new JLabel("Name:"));
             topPanelTwo.add(historyNameTextField);
-            topPanelTwo.add(new JScrollPane(matchHistoryDataTextArea), BorderLayout.CENTER);
+            topPanelTwo.add(new JLabel("Region:"));
+            topPanelTwo.add(regionComboBox2);
+            topPanelTwo.add(new JLabel("Matchregion:"));
+            topPanelTwo.add(matchRegionComboBox);
+            panelTwo.add(new JScrollPane(matchHistoryDataTextArea), BorderLayout.CENTER);
             panelTwo.add(topPanelTwo, BorderLayout.NORTH);
             panelTwo.add(retrieveMatchHistoryButton, BorderLayout.SOUTH);
 
@@ -114,7 +130,7 @@ public class LiveGameGUI extends JFrame {
 
             // Set the JFrame properties
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            setSize(500, 800);
+            setSize(600, 800);
             setVisible(true);
         }
 
@@ -135,17 +151,30 @@ public class LiveGameGUI extends JFrame {
             liveGameDataTextArea.setText(sb.toString());
         }
 
-        private void updateMatchHistoryTextArea(Region region, String name){
+        private void updateMatchHistoryTextArea(Region region, MatchRegion matchRegion, String name){
             StringBuilder sb = new StringBuilder();
             String[] data = playerService.getSummonerData(name, region, MatchRegion.EUROPE);
             for(String s: data){
-                Match match = playerService.getMatchHistoryData(MatchRegion.EUROPE, s);
+                Match match = playerService.getMatchHistoryData(matchRegion, s);
                 for(Participant participant: match.getInfo().getParticipants()){
                     if(participant.getSummonerName().equals(name)){
-                        sb.append(Transformer.getChampionNameById(participant.getChampionId())).append(" | ").append(participant.getKills()).append("/").append(participant.getDeaths()).append("/").append(participant.getAssists()).append("\n");
+                        sb.append(Transformer.getQueueTypeByQueueID(match.getInfo().getQueueId()) + " | ").append(Transformer.getChampionNameById(participant.getChampionId())).append(" | ").append(participant.getKills()).append("/").append(participant.getDeaths()).append("/").append(participant.getAssists()).append("\n");
                     }
                 }
             }
             matchHistoryDataTextArea.setText(sb.toString());
         }
+
+    private boolean isPasswordCorrect() {
+        JPasswordField passwordField = new JPasswordField();
+        int option = JOptionPane.showConfirmDialog(null, passwordField, "Enter password:", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (option == JOptionPane.OK_OPTION) {
+            char[] password = passwordField.getPassword();
+            String passwordString = new String(password);
+            authenticated = true;
+            return secretService.comparePassword(passwordString);
+        }
+        return false;
     }
+
+}
