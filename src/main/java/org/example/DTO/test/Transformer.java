@@ -143,6 +143,9 @@ public class Transformer {
             case 5 -> "Xin Zhao";
             case 29 -> "Twitch";
             case 11 -> "Master Yi";
+            case 711 -> "Vex";
+            case 147 -> "Seraphine";
+            case 141 -> "Kayn";
             case 887 -> "Gwen";
             case 44 -> "Taric";
             case 32 -> "Amumu";
@@ -166,11 +169,11 @@ public class Transformer {
             case "brazil" -> Region.BR1;
             case "japan" -> Region.JP1;
             case "korea" -> Region.KR;
-            case "LA" -> Region.LA1;
-            case "LA2" -> Region.LA2;
-            case "NA" -> Region.NA1;
-            case "OC" -> Region.OC1;
-            case "PH2" -> Region.PH2;
+            case "la" -> Region.LA1;
+            case "la2" -> Region.LA2;
+            case "na" -> Region.NA1;
+            case "oc" -> Region.OC1;
+            case "ph2" -> Region.PH2;
             default -> null;
         };
     }

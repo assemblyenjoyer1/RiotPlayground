@@ -1,8 +1,13 @@
 package org.example.gui;
 
+import org.example.DTO.models.Summoner;
+import org.example.DTO.models.enums.MatchRegion;
 import org.example.DTO.models.enums.Region;
 import org.example.DTO.models.v4league.LeagueEntry;
 import org.example.DTO.models.v4spectator.CurrentGameParticipant;
+import org.example.DTO.models.v4spectator.SummonerService;
+import org.example.DTO.models.v5Match.Match;
+import org.example.DTO.models.v5Match.Participant;
 import org.example.DTO.test.Transformer;
 import org.example.services.LeagueService;
 import org.example.services.MatchService;
@@ -17,15 +22,13 @@ import java.util.Set;
 public class LiveGameGUI extends JFrame {
     private JTextField nameTextField, regionTextField, historyNameTextField, apiKeyTextField;
     private JButton retrieveButton, resetButton, setApiKey, retrieveMatchHistoryButton;
-    private JTextArea liveGameDataTextArea;
+    private JTextArea liveGameDataTextArea, matchHistoryDataTextArea;
     private JComboBox<Region> regionComboBox;
-    String apiKey = System.getenv("APIKEY");
-
+    static String apiKey = System.getenv("APIKEY");
+    static PlayerService playerService = new PlayerService(apiKey);
 
         public LiveGameGUI() {
             super("Testing stuff GUI");
-
-            PlayerService playerService = new PlayerService(apiKey);
             MatchService matchService = new MatchService(playerService);
 
 
@@ -35,6 +38,7 @@ public class LiveGameGUI extends JFrame {
             retrieveButton = new JButton("Retrieve Live Game Data");
             resetButton = new JButton("reset");
             liveGameDataTextArea = new JTextArea(10, 40);
+            matchHistoryDataTextArea = new JTextArea(10, 40);
             apiKeyTextField = new JTextField(20);
             setApiKey = new JButton("set api key");
             historyNameTextField = new JTextField(20);
@@ -61,7 +65,8 @@ public class LiveGameGUI extends JFrame {
             });
 
             retrieveMatchHistoryButton.addActionListener(e -> {
-
+                String name = historyNameTextField.getText();
+                updateMatchHistoryTextArea(Region.EUW1, name);
             });
 
             // Create the first panel and add components to it
@@ -85,6 +90,7 @@ public class LiveGameGUI extends JFrame {
             JPanel topPanelTwo = new JPanel(new FlowLayout());
             topPanelTwo.add(new JLabel("Retrieve matchhistory: "));
             topPanelTwo.add(historyNameTextField);
+            topPanelTwo.add(new JScrollPane(matchHistoryDataTextArea), BorderLayout.CENTER);
             panelTwo.add(topPanelTwo, BorderLayout.NORTH);
             panelTwo.add(retrieveMatchHistoryButton, BorderLayout.SOUTH);
 
@@ -126,7 +132,20 @@ public class LiveGameGUI extends JFrame {
                     sb.append(participant.getSummonerName()).append(" is currently playing ").append(Transformer.getChampionNameById(participant.getChampionId())).append(" - " + leagueEntryList.get(0).getTier() + " ").append(leagueEntryList.get(0).getRank()).append(" | " + leagueEntryList.get(0).getLeaguePoints() + " LP").append(" - " + playerWinrate).append("\n");
                 }
             }
-
             liveGameDataTextArea.setText(sb.toString());
+        }
+
+        private void updateMatchHistoryTextArea(Region region, String name){
+            StringBuilder sb = new StringBuilder();
+            String[] data = playerService.getSummonerData(name, region, MatchRegion.EUROPE);
+            for(String s: data){
+                Match match = playerService.getMatchHistoryData(MatchRegion.EUROPE, s);
+                for(Participant participant: match.getInfo().getParticipants()){
+                    if(participant.getSummonerName().equals(name)){
+                        sb.append(Transformer.getChampionNameById(participant.getChampionId())).append(" | ").append(participant.getKills()).append("/").append(participant.getDeaths()).append("/").append(participant.getAssists()).append("\n");
+                    }
+                }
+            }
+            matchHistoryDataTextArea.setText(sb.toString());
         }
     }
