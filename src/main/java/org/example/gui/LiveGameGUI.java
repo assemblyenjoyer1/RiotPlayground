@@ -1,11 +1,10 @@
 package org.example.gui;
 
-import org.example.DTO.models.Summoner;
 import org.example.DTO.models.enums.MatchRegion;
 import org.example.DTO.models.enums.Region;
+import org.example.DTO.models.v4Summoner.Summoner;
 import org.example.DTO.models.v4league.LeagueEntry;
 import org.example.DTO.models.v4spectator.CurrentGameParticipant;
-import org.example.DTO.models.v4spectator.SummonerService;
 import org.example.DTO.models.v5Match.Match;
 import org.example.DTO.models.v5Match.Participant;
 import org.example.DTO.test.Transformer;
@@ -21,10 +20,10 @@ import java.util.List;
 import java.util.Set;
 
 public class LiveGameGUI extends JFrame {
-    private JTextField nameTextField, regionTextField, historyNameTextField, apiKeyTextField;
-    private JButton retrieveButton, resetButton, setApiKey, retrieveMatchHistoryButton;
+    private JTextField nameTextField, regionTextField, historyNameTextField, apiKeyTextField, nameTextFieldSummonerInfo, summonerInfoTextField;
+    private JButton retrieveButton, resetButton, setApiKey, retrieveMatchHistoryButton, retrieveSummonerInfoButton;
     private JTextArea liveGameDataTextArea, matchHistoryDataTextArea;
-    private JComboBox<Region> regionComboBox, regionComboBox2;
+    private JComboBox<Region> regionComboBox, regionComboBox2, regionComboBoxSummonerInfo;
     private JComboBox<MatchRegion> matchRegionComboBox;
     static String apiKey = System.getenv("APIKEY");
     static PlayerService playerService = new PlayerService(apiKey);
@@ -36,19 +35,23 @@ public class LiveGameGUI extends JFrame {
             MatchService matchService = new MatchService(playerService);
             regionComboBox = new JComboBox<>(Region.values());
             regionComboBox2 = new JComboBox<>(Region.values());
+            regionComboBoxSummonerInfo = new JComboBox<>(Region.values());
             matchRegionComboBox = new JComboBox<>(MatchRegion.values());
             nameTextField = new JTextField(20);
+            nameTextFieldSummonerInfo = new JTextField(20);
+            summonerInfoTextField = new JTextField(20);
             regionTextField = new JTextField(20);
             retrieveButton = new JButton("Retrieve Live Game Data");
-            resetButton = new JButton("reset");
+            resetButton = new JButton("Reset");
             liveGameDataTextArea = new JTextArea(10, 40);
             liveGameDataTextArea.setEditable(false);
             matchHistoryDataTextArea = new JTextArea(10, 40);
             matchHistoryDataTextArea.setEditable(false);
             apiKeyTextField = new JTextField(20);
-            setApiKey = new JButton("set api key");
+            setApiKey = new JButton("Set api key");
             historyNameTextField = new JTextField(20);
-            retrieveMatchHistoryButton = new JButton("retrieve");
+            retrieveMatchHistoryButton = new JButton("Retrieve");
+            retrieveSummonerInfoButton = new JButton("Retrieve");
 
             // Add listeners to buttons
             retrieveButton.addActionListener(e -> {
@@ -79,6 +82,19 @@ public class LiveGameGUI extends JFrame {
                 MatchRegion matchRegion = (MatchRegion) matchRegionComboBox.getSelectedItem();
                 String name = historyNameTextField.getText();
                 updateMatchHistoryTextArea(region, matchRegion, name);
+            });
+
+            retrieveSummonerInfoButton.addActionListener( e -> {
+                if (authenticated || isPasswordCorrect()) {
+                    System.out.println(playerService.getApiKey());
+                    String name = nameTextFieldSummonerInfo.getText();
+                    Region region = (Region) regionComboBoxSummonerInfo.getSelectedItem();
+                    Summoner summoner = playerService.getSummonerByName(region, name);
+                    System.out.println(summoner.getAccountId());
+                    updateSummonerInfoTextArea(summoner);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Invalid password", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             });
 
             // Create the first panel and add components to it
@@ -119,11 +135,27 @@ public class LiveGameGUI extends JFrame {
             panelThree.add(topPanelThree, BorderLayout.NORTH);
             panelThree.add(setApiKey, BorderLayout.SOUTH);
 
+            // Create the fourth panel and add components to it
+            JPanel panelFour = new JPanel(new BorderLayout());
+            panelFour.setBorder(BorderFactory.createTitledBorder("SummonerDTO"));
+            JPanel topPanelFour = new JPanel(new GridLayout());
+            topPanelFour.add(new JLabel("Enter your Summoner name:"));
+            topPanelFour.add(nameTextFieldSummonerInfo);
+            topPanelFour.add(new JLabel("Select your region:"));
+            topPanelFour.add(regionComboBoxSummonerInfo);
+            panelFour.add(topPanelFour, BorderLayout.NORTH);
+            panelFour.add(new JScrollPane(summonerInfoTextField), BorderLayout.CENTER);
+            JPanel bottomPanelFour = new JPanel(new FlowLayout());
+            bottomPanelFour.add(retrieveSummonerInfoButton);
+            panelFour.add(bottomPanelFour, BorderLayout.SOUTH);
+
+
             // Create the JTabbedPane and add the panels to it
             JTabbedPane tabbedPane = new JTabbedPane();
             tabbedPane.addTab("Live Game Data", panelOne);
             tabbedPane.addTab("Match History", panelTwo);
             tabbedPane.addTab("API Key", panelThree);
+            tabbedPane.addTab("SummonerDTO", panelFour);
 
             // Add the JTabbedPane to the JFrame
             add(tabbedPane);
@@ -144,11 +176,27 @@ public class LiveGameGUI extends JFrame {
                 for (CurrentGameParticipant participant : currentGameParticipants) {
                     Set<LeagueEntry> leagueEntries = leagueService.getLeagueEntryByEncryptedSummonerId(region, participant.getSummonerId());
                     List<LeagueEntry> leagueEntryList = new ArrayList<>(leagueEntries);
-                    String playerWinrate = leagueService.calculateWinrate(leagueEntryList.get(0).getWins(), leagueEntryList.get(0).getLosses());
-                    sb.append(participant.getSummonerName()).append(" is currently playing ").append(Transformer.getChampionNameById(participant.getChampionId())).append(" - " + leagueEntryList.get(0).getTier() + " ").append(leagueEntryList.get(0).getRank()).append(" | " + leagueEntryList.get(0).getLeaguePoints() + " LP").append(" - " + playerWinrate).append("\n");
+                    LeagueEntry desiredEntry = null;
+                    for(LeagueEntry leagueEntry: leagueEntryList){
+                        if(leagueEntry.getQueueType().equals("RANKED_SOLO_5x5")){
+                            desiredEntry = leagueEntry;
+                        }
+                    }
+                    String playerWinrate = leagueService.calculateWinrate(desiredEntry.getWins(), desiredEntry.getLosses());
+                    sb.append(participant.getSummonerName()).append(" is currently playing ").append(Transformer.getChampionNameById(participant.getChampionId())).append(" - " + desiredEntry.getTier() + " ").append(desiredEntry.getRank()).append(" | " + desiredEntry.getLeaguePoints() + " LP").append(" - " + playerWinrate).append((desiredEntry.getWins() + desiredEntry.getLosses()) + " Games").append("\n");
                 }
             }
             liveGameDataTextArea.setText(sb.toString());
+        }
+
+        private void updateSummonerInfoTextArea(Summoner summoner){
+            StringBuilder sb = new StringBuilder();
+            sb.append("Name: " + summoner.getName()).append("\n")
+                    .append("\nAccountID: " + summoner.getAccountId())
+                    .append("\nID: " + summoner.getId())
+                    .append("\nPUUID: " + summoner.getPuuid())
+                    .append("\nLevel:" + summoner.getSummonerLevel());
+            summonerInfoTextField.setText(sb.toString());
         }
 
         private void updateMatchHistoryTextArea(Region region, MatchRegion matchRegion, String name){

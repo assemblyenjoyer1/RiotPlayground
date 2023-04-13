@@ -159,7 +159,9 @@ public class Transformer {
             case 267 -> "Nami";
             case 59 -> "Jarvan IV";
             case 81 -> "Ezreal";
-            default -> "champion not found";
+            case 902 -> "Milio";
+            case 526 -> "Rell";
+            default -> "champion not found" + championId;
         };
     }
 
@@ -175,6 +177,22 @@ public class Transformer {
             case "na" -> Region.NA1;
             case "oc" -> Region.OC1;
             case "ph2" -> Region.PH2;
+            default -> null;
+        };
+    }
+
+    public static String getRegionString(String region){
+        return switch(region.toLowerCase()){
+            case "euw1" -> "EUW";
+            case "eun1" -> "EUNE";
+            case "br1" -> "BR";
+            case "jp1" -> "JP";
+            case "kr" -> "KR";
+            case "la1" -> "LA1";
+            case "la2" -> "LA2";
+            case "na1" -> "NA";
+            case "oc1" -> "OC1";
+            case "ph2" -> "PH2";
             default -> null;
         };
     }

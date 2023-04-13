@@ -1,7 +1,7 @@
 package org.example.services;
 
 import org.example.DTO.models.enums.Region;
-import org.example.DTO.models.Summoner;
+import org.example.DTO.models.v4Summoner.Summoner;
 import org.example.DTO.models.v4spectator.BannedChampion;
 import org.example.DTO.models.v4spectator.SummonerService;
 import org.example.DTO.models.v4spectator.CurrentGameParticipant;
