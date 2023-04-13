@@ -153,7 +153,7 @@ public class Main {
     }
 
     public static String encryptSummonerId(long summonerId) {
-        String key = "RGAPI-a7011daa-3d4f-4a44-8adc-29a7f0b7cdaa"; // Replace with your API key
+        String key = "urkey"; // Replace with your API key
         String idStr = Long.toString(summonerId);
         String message = idStr + ":0:" + System.currentTimeMillis();
         String encrypted = "";
