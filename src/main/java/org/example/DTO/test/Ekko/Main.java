@@ -30,11 +30,11 @@ public class Main {
         ClientAuthInfo info = watcher.getAuthInfo();
 
         LeagueApi remotingApi = new LeagueApi(info.getRemotingAuthToken(),info.getRemotingPort());
+        LeagueApi clientApi = new LeagueApi(info.getRiotClientAuthToken(), info.getRiotClientPort());
         //CompletableFuture<String> future = api.sendAsync(HttpMethod.GET, "/lol-summoner/v1/current-summoner", null);
         //String result = future.join();
         //System.out.println("Res:" + result);
 
-        LeagueApi clientApi = new LeagueApi(info.getRiotClientAuthToken(), info.getRiotClientPort());
 
         printSummonersInLobby(clientApi,remotingApi, gson);
         //acceptQueue(remotingApi);

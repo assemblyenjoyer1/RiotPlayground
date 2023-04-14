@@ -30,11 +30,6 @@ public class LeagueApi {
         this.client = HttpClient.newBuilder()
                 .sslContext(createInsecureSslContext())
                 .build();
-        String encodedAuth = Base64.getEncoder().encodeToString(("riot:" + authToken).getBytes(StandardCharsets.UTF_8));
-        HttpRequest.Builder builder = HttpRequest.newBuilder()
-                .header("Authorization", "Basic " + encodedAuth)
-                .header("User-Agent", "LeagueOfLegendsClient")
-                .header("Accept", "application/json");
         this.baseUrl = "https://127.0.0.1:" + authPort;
     }
 
